@@ -1,0 +1,354 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Last Train</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: radial-gradient(circle at bottom, #0a0a12, #000);
+            color: #eaeaea;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+        }
+
+        /* STARS */
+        .stars {
+            position: fixed;
+            inset: 0;
+            background: url("https://i.imgur.com/6X6VQZP.png");
+            opacity: 0.25;
+            animation: drift 140s linear infinite;
+            pointer-events: none; /* ← THIS FIXES THE YES BUTTON */
+        }
+
+
+        @keyframes drift {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: -2000px 2000px;
+            }
+        }
+
+        /* GENERAL */
+        .container {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* STATION */
+        .station {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6em;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+
+        .board {
+            background: rgba(10,10,25,0.85);
+            padding: 26px 42px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 0 40px rgba(255,255,255,0.05);
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            width: 320px;
+            margin: 10px 0;
+        }
+
+        .destination {
+            color: #ff8fb3;
+            letter-spacing: 2px;
+        }
+
+        .name {
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        /* BUTTONS */
+        .buttons {
+            margin-top: 50px;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 14px 36px;
+            margin: 0 15px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+            button:hover {
+                background: #ff8fb3;
+                border-color: #ff8fb3;
+                color: #000;
+            }
+
+        /* OVERLAY */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* TRAIN BLAST */
+        .train {
+            position: fixed;
+            bottom: 35%;
+            left: -130%;
+            width: 130%;
+            height: 80px;
+            background: linear-gradient(to right, #000, #111, #000);
+            box-shadow: 0 0 40px rgba(255,255,255,0.15);
+            z-index: 11;
+        }
+
+            .train::before {
+                content: "";
+                position: absolute;
+                right: -50px;
+                top: 18px;
+                width: 50px;
+                height: 50px;
+                background: radial-gradient(circle, #fff, transparent 70%);
+            }
+
+        .run {
+            animation: trainRush 0.6s cubic-bezier(.8,0,.2,1) forwards;
+        }
+
+        @keyframes trainRush {
+            from {
+                left: -130%;
+            }
+
+            to {
+                left: 130%;
+            }
+        }
+
+        /* SHAKE */
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(0);
+            }
+
+            25% {
+                transform: translate(-6px, 3px);
+            }
+
+            50% {
+                transform: translate(6px, -3px);
+            }
+
+            75% {
+                transform: translate(-4px, 2px);
+            }
+
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        /* TRAIN INTERIOR */
+        .interior {
+            background: linear-gradient(to top, #120b10, #1a1117);
+        }
+
+        /* WINDOW */
+        .window {
+            width: 85%;
+            max-width: 620px;
+            height: 45%;
+            border-radius: 18px;
+            border: 3px solid rgba(255,255,255,0.35);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 0 40px rgba(255,143,179,0.18);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 35px;
+        }
+
+        /* OUTSIDE MOTION */
+        .outside {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient( to right, transparent, rgba(255,255,255,0.25), transparent );
+            animation: outsideMove 0.9s linear infinite;
+        }
+
+        @keyframes outsideMove {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 500px 0;
+            }
+        }
+
+        /* INTERIOR LIGHT */
+        .light {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(255,200,220,0.18), transparent 70%);
+        }
+
+        /* FINAL TEXT */
+        .final {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2em;
+            line-height: 1.45;
+            animation: fadeIn 2s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* YES BUTTON */
+        .yes {
+            margin-top: 35px;
+            font-size: 1.1em;
+            letter-spacing: 3px;
+            padding: 14px 48px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="train" id="train"></div>
+    <div class="stars"></div>
+
+    <!-- SCENE 1: STATION -->
+    <div class="container" id="scene1">
+        <div class="station">MIDNIGHT STATION</div>
+
+        <div class="board">
+            <div class="row"><span>Passenger</span><span>MERLIN</span></div>
+            <div class="row"><span>Departure</span><span>14.02.2026</span></div>
+            <div class="row"><span>Destination</span><span class="destination">LEONIT</span></div>
+            <div class="row"><span>Train</span><span>VAL-0214</span></div>
+        </div>
+
+        <div class="name">This one only stops once.</div>
+
+        <div class="buttons">
+            <button onclick="boardTrain()">BOARD THE TRAIN</button>
+            <button onclick="missTrain()">MISS IT</button>
+        </div>
+    </div>
+
+    <!-- SCENE 2: INSIDE TRAIN -->
+    <div class="container hidden interior" id="scene2">
+
+        <div class="window">
+            <div class="outside"></div>
+            <div class="stars"></div>
+            <div class="light"></div>
+        </div>
+
+        <div class="final">
+            The world is moving fast outside.<br>
+            In here, it feels warm.<br><br>
+            Merlin,<br>
+            will you be my valentine?
+        </div>
+
+        <button class="yes" onclick="sayYes()">YES</button>
+    </div>
+
+    <!-- SCENE 3: MISS -->
+    <div class="container hidden" id="scene3">
+        <div class="final">
+            The train didn’t wait.<br><br>
+            But love doesn’t follow schedules.
+        </div>
+    </div>
+
+    <!-- SCENE 4: AFTER YES -->
+    <div class="container hidden interior" id="scene4">
+        <div class="final">
+            Then let’s stay like this.<br><br>
+            Side by side.<br>
+            Window open to the night.<br><br>
+            Wherever this train goes,<br>
+            I want it to be with you.<br><br>
+            — Leonit 💗
+        </div>
+    </div>
+
+    <script>
+        function boardTrain() {
+            const overlay = document.getElementById("overlay");
+            const train = document.getElementById("train");
+
+            overlay.style.opacity = "1";
+            train.classList.remove("run");
+            void train.offsetWidth;
+            train.classList.add("run");
+            document.body.classList.add("shake");
+
+            setTimeout(() => {
+                document.body.classList.remove("shake");
+                document.getElementById("scene1").classList.add("hidden");
+                document.getElementById("scene2").classList.remove("hidden");
+                overlay.style.opacity = "0";
+            }, 700);
+        }
+
+        function missTrain() {
+            document.getElementById("scene1").classList.add("hidden");
+            document.getElementById("scene3").classList.remove("hidden");
+        }
+
+        function sayYes() {
+            document.getElementById("scene2").classList.add("hidden");
+            document.getElementById("scene4").classList.remove("hidden");
+        }
+    </script>
+
+</body>
+</html>
